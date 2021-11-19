@@ -23,7 +23,7 @@ def create_record(sql_query:str,data:tuple):
 
 def connect_db():
     connection = mysql_object.connect()
-    db_cursor = connection.cursor(pymysql.cursors.DictCursor)
+    db_cursor = connection.cursor()
     return connection, db_cursor
 
 
