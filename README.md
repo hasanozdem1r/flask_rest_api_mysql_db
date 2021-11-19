@@ -41,7 +41,7 @@ category-description | string
 
 GET all authors
 ```bash
-curl http://127.0.0.1:5000/api/v1/authors
+curl http://127.0.0.1:5000/api/v1/authors/all
 ```
 
 POST author
