@@ -20,11 +20,11 @@ python main.py
 
 GET all categories 
 ```bash
-curl http://127.0.0.1:5000/api/v1/categories
+curl http://127.0.0.1:5000/api/v1/categories/all
 ```
 GET category details by category name
 ```bash
-curl http://127.0.0.1:5000/api/v1/categories?category-name=Horrors
+curl http://127.0.0.1:5000/api/v1/categories?category-name=Horror
 ```
 parameter_name | parameter_type 
 --- | --- | 
