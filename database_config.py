@@ -26,7 +26,15 @@ def connect_db():
     db_cursor = connection.cursor()
     return connection, db_cursor
 
-
+def close_connection(connection, db_cursor):
+    """
+    This method used to close SQL server connection
+    :param connection:
+    :param db_cursor:
+    :return:
+    """
+    db_cursor.close()
+    connection.close()
 # this section has been created testing connection independently
 if __name__=='__main__':
     try:

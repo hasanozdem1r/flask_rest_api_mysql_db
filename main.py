@@ -1,5 +1,4 @@
-import pymysql
-from database_config import mysql_object,create_record,connect_db
+from database_config import mysql_object,create_record,connect_db,close_connection
 from app import app
 from flask import Flask, jsonify, request,abort
 from datetime import datetime
@@ -19,15 +18,14 @@ def show_all_categories():
         connection, db_cursor = connect_db()
         db_cursor.execute("SELECT * FROM ronwell_case_study.category_table")
         categories=db_cursor.fetchall()
+        close_connection(connection, db_cursor)
         response = jsonify(categories)
         response.status_code = 200
         return response
     except Exception as error:
         error_dict={'Error':str(error)}
         return jsonify(error_dict)
-    finally:
-        db_cursor.close()
-        connection.close()
+
 
 # GET category by name of category
 # Example call format : curl http://127.0.0.1:5000/api/v1/categories?category-name=Horror
@@ -43,6 +41,7 @@ def show_category():
             connection, db_cursor = connect_db()
             db_cursor.execute("SELECT * FROM ronwell_case_study.category_table WHERE category_name=%s",category_name)
             categories=db_cursor.fetchone()
+            close_connection(connection, db_cursor)
             response = jsonify(categories)
             response.status_code = 200
             return response
@@ -52,10 +51,6 @@ def show_category():
     except Exception as error:
         error_dict={'Error':str(error)}
         return jsonify(error_dict)
-    finally:
-        db_cursor.close()
-        connection.close()
-
 
 # POST category (create new category)
 #In postman select post method -> http://127.0.0.1:5000/api/v1/categories/post?category-name=FR&category-description=FR
@@ -75,6 +70,7 @@ def add_category():
         if category_name and category_description and request.method=='POST':
             sql_query="INSERT INTO ronwell_case_study.category_table(category_name,category_description) VALUES(%s,%s)"
             db_cursor,connection=create_record(sql_query,data)
+            close_connection(connection, db_cursor)
             response=jsonify('Category added successfully')
             response.status_code=200
             return response
@@ -83,9 +79,6 @@ def add_category():
     except Exception as error:
         error_dict={'Error':str(error)}
         return jsonify(error_dict)
-    finally:
-       db_cursor.close()
-       connection.close()
 
 # helper function for category
 def get_category_parameters():
@@ -111,15 +104,14 @@ def show_all_authors():
         connection, db_cursor = connect_db()
         db_cursor.execute("SELECT * FROM author_table")
         authors=db_cursor.fetchall()
+        close_connection(connection, db_cursor)
         response = jsonify(authors)
         response.status_code = 200
         return response
     except Exception as error:
         error_dict={'Error':str(error)}
         return jsonify(error_dict)
-    finally:
-        db_cursor.close()
-        connection.close()
+
 
 # POST authors (create new author)
 # In postman select post method -> http://127.0.0.1:5000/api/v1/authors/post?first-name=Hasan&last-name=Digital
@@ -143,6 +135,7 @@ def add_author():
         if first_name and last_name and request.method=='POST':
             sql_query='INSERT INTO ronwell_case_study.author_table (first_name,last_name,blog_amount,date_joined) VALUES(%s,%s,%s,%s)'
             db_cursor, connection = create_record(sql_query, data)
+            close_connection(connection, db_cursor)
             response = jsonify('Author added successfully')
             response.status_code = 200
             return response
@@ -151,9 +144,6 @@ def add_author():
     except Exception as error:
         error_dict={'Error':str(error)}
         return jsonify(error_dict)
-    finally:
-         db_cursor.close()
-         connection.close()
 
 # BLOG CRUD OPERATIONS
 
@@ -169,15 +159,13 @@ def show_all_blogs():
         connection, db_cursor = connect_db()
         db_cursor.execute("SELECT * FROM blog_table")
         blogs=db_cursor.fetchall()
+        close_connection(connection, db_cursor)
         response = jsonify(blogs)
         response.status_code = 200
         return response
     except Exception as error:
         error_dict = {'Error': str(error)}
         return jsonify(error_dict)
-    finally:
-        db_cursor.close()
-        connection.close()
 
 # POST blogs
 # In postman select post method -> http://127.0.0.1:5000/api/v1/blogs/post?blog-title=DollarMı&blog-content=Dollmaz&image-path=dolmaz.com&blog-tags=ekonomi&blog-category-id=1&blog-author-id=1
@@ -223,15 +211,13 @@ def add_blog():
                 sql_query='UPDATE ronwell_case_study.author_table SET blog_amount=%s WHERE author_id=%s'
                 db_cursor.execute(sql_query,(amount_blog,blog_author_id,))
                 connection.commit()
+                close_connection(connection, db_cursor)
                 response = jsonify('Blog added successfully')
                 response.status_code = 200
                 return response
     except Exception as error:
         error_dict={'Error':str(error)}
         return jsonify(error_dict)
-    finally:
-         db_cursor.close()
-         connection.close()
 
 # helper function for blogs
 def get_blog_params():
